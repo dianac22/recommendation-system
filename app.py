@@ -1,6 +1,9 @@
 import os
 import kagglehub
 import pandas as pd
+from define_items import (
+    get_client, ensure_properties, build_rows, upload_items_add_then_set
+)
 
 path = kagglehub.dataset_download("jealousleopard/goodreadsbooks")
 print("Path to dataset files:", path)
@@ -20,3 +23,8 @@ nRow, nCol = df1.shape
 print(f"There are {nRow} rows and {nCol} columns")
 
 print(df1.head(3))
+
+client = get_client()
+ensure_properties(client)
+rows = build_rows(df1)
+upload_items_add_then_set(client, rows, batch_size=500)
