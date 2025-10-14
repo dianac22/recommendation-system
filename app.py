@@ -2,7 +2,7 @@ import os
 import kagglehub
 import pandas as pd
 from define_items import (
-    get_client, ensure_properties, build_rows, upload_items_add_then_set
+    get_client, ensure_properties, build_rows, create_items
 )
 
 path = kagglehub.dataset_download("jealousleopard/goodreadsbooks")
@@ -27,4 +27,4 @@ print(df1.head(3))
 client = get_client()
 ensure_properties(client)
 rows = build_rows(df1)
-upload_items_add_then_set(client, rows, batch_size=500)
+create_items(client, rows, batch_size=500)

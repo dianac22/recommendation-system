@@ -72,7 +72,7 @@ def build_rows(df):
         }))
     return rows
 
-def upload_items_add_then_set(client, rows, batch_size=1000):
+def create_items(client, rows, batch_size=1000):
     add_reqs = [AddItem(item_id) for item_id, _ in rows]
     for i in range(0, len(add_reqs), batch_size):
         client.send(Batch(add_reqs[i:i+batch_size]))
