@@ -41,7 +41,7 @@ def ensure_properties(client):
         if name not in existing:
             reqs.append(AddItemProperty(name, typ))
         elif existing[name] != typ:
-            print(f"[WARN] '{name}' exists as '{existing[name]}', requested '{typ}'. Type cannot be changed.")
+            print(f"[WARN] '{name}' exists as '{existing[name]}', requested '{typ}'.")
     if reqs:
         client.send(Batch(reqs))
         print("Properties created.")
@@ -64,11 +64,16 @@ def build_rows(df):
         ar = pd.to_numeric(r.get("average_rating"), errors="coerce")
         average_rating = None if pd.isna(ar) else float(ar)
 
+        language_code = None if pd.isna(r.get("language_code")) else str(r.get("language_code")).strip()
+        publisher = None if pd.isna(r.get("publisher")) else str(r.get("publisher")).strip()
+
         rows.append((item_id, {
             "title": title,
             "authors": authors,
             "num_pages": num_pages,
             "average_rating": average_rating,
+            "language_code": language_code,
+            "publisher": publisher
         }))
     return rows
 
