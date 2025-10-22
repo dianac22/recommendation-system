@@ -11,7 +11,6 @@ DEFAULT_REGION = Region.EU_WEST
 
 USER_PROPERTIES = {
     "sales_person": "string",
-    "sp_id": "string",
     "team": "string",
     "location": "string",
 }
@@ -75,7 +74,6 @@ def build_user_rows(df):
 
         rows.append((user_id, {
             "sales_person": sales_person,
-            "sp_id": sp_id_value,
             "team": team,
             "location": location,
         }))
