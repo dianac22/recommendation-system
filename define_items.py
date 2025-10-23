@@ -48,32 +48,78 @@ def ensure_properties(client):
     else:
         print("Properties already exist.")
 
+def _norm_str(x):
+    if pd.isna(x):
+        return None
+    s = str(x).strip()
+    return s if s else None
+
+def _year_from_date(val):
+    if pd.isna(val):
+        return None
+    s = str(val).strip()
+    if not s:
+        return None
+    try:
+        parts = s.split('/')
+        y = int(parts[-1])
+        return y
+    except Exception:
+        try:
+            dt = pd.to_datetime(s, errors="coerce")
+            return int(dt.year) if pd.notna(dt) else None
+        except Exception:
+            return None
+
 def build_rows(df):
     if "bookID" not in df.columns:
         raise ValueError("Missing 'bookID' column.")
+    
+    df = df.copy()
+    df.columns = [c.strip() for c in df.columns]
+
+    if "publication_year" not in df.columns and "publication_date" in df.columns:
+        df = df.copy()
+        df["publication_year"] = df["publication_date"].apply(_year_from_date)
+
     rows = []
     for _, r in df.iterrows():
         item_id = str(r["bookID"])
 
-        title = None if pd.isna(r.get("title")) else str(r.get("title")).strip()
-        authors = None if pd.isna(r.get("authors")) else str(r.get("authors")).strip()
+        title = _norm_str(r.get("title"))
+        authors = _norm_str(r.get("authors"))
+        language_code = _norm_str(r.get("language_code"))
+        publisher = _norm_str(r.get("publisher"))
+        isbn = _norm_str(r.get("isbn"))
+        isbn13 = _norm_str(r.get("isbn13"))
 
         npg = pd.to_numeric(r.get("num_pages"), errors="coerce")
         num_pages = None if pd.isna(npg) else int(npg)
 
-        ar = pd.to_numeric(r.get("average_rating"), errors="coerce")
-        average_rating = None if pd.isna(ar) else float(ar)
+        avg_raw = pd.to_numeric(r.get("average_rating"), errors="coerce")
+        average_rating = None if pd.isna(avg_raw) else float(avg_raw)
 
-        language_code = None if pd.isna(r.get("language_code")) else str(r.get("language_code")).strip()
-        publisher = None if pd.isna(r.get("publisher")) else str(r.get("publisher")).strip()
+        ratings_raw = pd.to_numeric(r.get("ratings_count"), errors="coerce")
+        ratings_count = None if pd.isna(ratings_raw) else int(ratings_raw)
+
+        texts_raw = pd.to_numeric(r.get("text_reviews_count"), errors="coerce")
+        text_reviews_count = None if pd.isna(texts_raw) else int(texts_raw)
+
+        year_raw = pd.to_numeric(r.get("publication_year"), errors="coerce")
+        publication_year = None if pd.isna(year_raw) else int(year_raw)
 
         rows.append((item_id, {
             "title": title,
             "authors": authors,
-            "num_pages": num_pages,
             "average_rating": average_rating,
+            "num_pages": num_pages,
             "language_code": language_code,
-            "publisher": publisher
+            "publisher": publisher,
+            "ratings_count": ratings_count,
+            "text_reviews_count": text_reviews_count,
+            "publication_year": publication_year,
+            "isbn": isbn,
+            "isbn13": isbn13,
         }))
     return rows
 
