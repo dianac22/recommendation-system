@@ -21,3 +21,5 @@ num_pages – number of pages (integer)
 (also available: isbn, isbn13, language_code, ratings_count, text_reviews_count, publication_date, publisher)
 
 This dataset was chosen because of its number of items, referencing meaningful attributes for recommendations. It also had a clean structure and consistent identifiers, which were easier to map to a recommendation catalog.
+
+The project loads items (books) from the already mentioned Kaggle dataset and users (sales people) from a local CSV file, then pushes them to Recombee using the official SDK.

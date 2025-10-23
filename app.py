@@ -33,6 +33,7 @@ ensure_properties(client)
 rows = build_rows(df1)
 create_items(client, rows, batch_size=500)
 
+PEOPLE_CSV_PATH = "/Users/dcaragui/Desktop/Proiect sisteme de recomandare/people.csv" 
 if not os.path.exists(PEOPLE_CSV_PATH):
     raise FileNotFoundError(f"people.csv not found at {PEOPLE_CSV_PATH}")
 
